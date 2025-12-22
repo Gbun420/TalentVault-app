@@ -20,7 +20,7 @@ export default function Home() {
     <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
       <div className="card p-10">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-          Malta CV Directory
+          TalentVault
         </p>
         <h1 className="mt-3 text-3xl font-semibold text-slate-900">
           A GDPR-ready CV directory for Malta employers and jobseekers.

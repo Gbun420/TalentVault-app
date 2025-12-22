@@ -1,4 +1,4 @@
-# Malta CV Directory – Production Deployment Guide
+# TalentVault – Production Deployment Guide
 
 ## Environment variables
 Copy `.env.example` to `.env.local` for local dev and set secrets in Vercel Project Settings → Environment Variables.

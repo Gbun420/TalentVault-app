@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Malta CV Directory",
+  title: "TalentVault",
   description: "GDPR-aware CV directory for Malta employers and jobseekers.",
 };
 
@@ -33,7 +33,7 @@ export default function RootLayout({
         <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <Link href="/" className="text-lg font-semibold text-blue-700">
-              Malta CV Directory
+              TalentVault
             </Link>
             <nav className="flex items-center gap-4 text-sm font-medium text-slate-700">
               <Link href="/employer" className="hover:text-blue-700">

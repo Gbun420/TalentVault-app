@@ -47,7 +47,7 @@ function LoginForm() {
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-slate-900">Login</h1>
         <p className="text-sm text-slate-600">
-          Access your Malta CV Directory account.
+          Access your TalentVault account.
         </p>
       </div>
       <form className="space-y-4" onSubmit={onSubmit}>

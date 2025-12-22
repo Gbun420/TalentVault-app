@@ -276,7 +276,7 @@ export default function JobseekerProfileForm({
           Jobseeker profile
         </p>
         <h1 className="text-2xl font-semibold text-slate-900">
-          Publish your Malta CV for employers to discover
+          Publish your CV on TalentVault for Malta employers to discover
         </h1>
         <p className="text-sm text-slate-600">
           Structured profile first; optional PDF upload for completeness.
