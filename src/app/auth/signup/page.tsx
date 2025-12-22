@@ -25,6 +25,9 @@ export default function SignupPage() {
     const { data, error: signupError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/verify`,
+      },
     });
 
     if (signupError) {
@@ -33,25 +36,10 @@ export default function SignupPage() {
       return;
     }
 
-    const userId = data.user?.id;
-    if (!data.session || !userId) {
-      setError("Signup succeeded. Please verify your email, then log in to continue.");
-      setLoading(false);
-      return;
-    }
-
-    const { error: profileError } = await supabase.from("profiles").upsert({
-      id: userId,
-      email,
-      full_name,
-      role,
-    });
-    if (profileError) {
-      setError(profileError.message);
-      setLoading(false);
-      return;
-    }
-    router.replace(roleHome[role]);
+    // For OTP flow, redirect to verification page
+    const verifyUrl = `/auth/verify?email=${encodeURIComponent(email)}&full_name=${encodeURIComponent(full_name)}&role=${encodeURIComponent(role)}`;
+    router.push(verifyUrl);
+    return;
   };
 
   return (
