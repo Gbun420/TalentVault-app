@@ -4,7 +4,7 @@ import JobseekerProfileForm from "@/components/jobseeker-profile-form";
 
 export default async function JobseekerDashboard() {
   const profile = await requireRole("jobseeker", "/jobseeker");
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data: jobseekerProfile } = await supabase
     .from("jobseeker_profiles")

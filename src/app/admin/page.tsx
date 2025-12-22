@@ -4,7 +4,7 @@ import AdminModerationBoard from "@/components/admin-moderation-board";
 
 export default async function AdminDashboard() {
   await requireRole("admin", "/admin");
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   const { count: cvCount } = await supabase
     .from("jobseeker_profiles")
