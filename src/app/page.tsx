@@ -2,28 +2,28 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="space-y-16">
-      <section className="bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-14 lg:py-18">
-          <div className="space-y-3">
+    <div className="space-y-14">
+      <section className="bg-white shadow-sm">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-14 lg:flex-row lg:items-center lg:py-16">
+          <div className="flex-1 space-y-4">
             <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">TalentVault</p>
             <h1 className="text-4xl font-semibold leading-tight text-slate-900 lg:text-5xl">
               Stop posting jobs. Start hiring.
             </h1>
-            <p className="text-lg text-slate-700">
+            <p className="text-lg text-slate-800">
               Search real CVs from Malta-based candidates and contact them instantly — without job ads or recruiter fees.
             </p>
             <p className="text-sm text-slate-600">
               Pay only when you unlock a candidate. No subscriptions required.
             </p>
-          </div>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/employer" className="btn btn-primary w-full sm:w-auto text-base">
-              Browse CVs (Employers)
-            </Link>
-            <Link href="/jobseeker" className="btn btn-secondary w-full sm:w-auto text-base">
-              Post Your CV (Jobseekers)
-            </Link>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/employer" className="btn btn-primary w-full sm:w-auto text-base">
+                Browse CVs (Employers)
+              </Link>
+              <Link href="/jobseeker" className="btn btn-secondary w-full sm:w-auto text-base">
+                Post Your CV (Jobseekers)
+              </Link>
+            </div>
           </div>
         </div>
       </section>

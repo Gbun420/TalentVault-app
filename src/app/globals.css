@@ -1,9 +1,7 @@
 @import "tailwindcss";
 
 body {
-  background: radial-gradient(1200px at 20% 20%, #dbeafe 10%, transparent 50%),
-    radial-gradient(1200px at 80% 0%, #fdf2f8 10%, transparent 45%),
-    #f8fafc;
+  background: #f8fafc;
   color: #0f172a;
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
