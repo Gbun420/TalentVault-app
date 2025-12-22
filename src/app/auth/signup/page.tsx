@@ -34,23 +34,24 @@ export default function SignupPage() {
     }
 
     const userId = data.user?.id;
-    if (userId) {
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: userId,
-        email,
-        full_name,
-        role,
-      });
-      if (profileError) {
-        setError(profileError.message);
-        setLoading(false);
-        return;
-      }
-      router.replace(roleHome[role]);
-    } else {
-      setError("Signup succeeded, please confirm your email to continue.");
+    if (!data.session || !userId) {
+      setError("Signup succeeded. Please verify your email, then log in to continue.");
       setLoading(false);
+      return;
     }
+
+    const { error: profileError } = await supabase.from("profiles").upsert({
+      id: userId,
+      email,
+      full_name,
+      role,
+    });
+    if (profileError) {
+      setError(profileError.message);
+      setLoading(false);
+      return;
+    }
+    router.replace(roleHome[role]);
   };
 
   return (
