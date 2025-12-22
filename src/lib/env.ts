@@ -13,6 +13,8 @@ const envSchema = z.object({
   STRIPE_UNLOCK_PRICE_ID: z.string().optional(),
   STRIPE_SUB_LIMITED_PRICE_ID: z.string().optional(),
   STRIPE_SUB_UNLIMITED_PRICE_ID: z.string().optional(),
+
+  GEMINI_PROJECT_ID: z.string().optional(),
 });
 
 export const env = envSchema.parse({
@@ -25,6 +27,7 @@ export const env = envSchema.parse({
   STRIPE_UNLOCK_PRICE_ID: process.env.STRIPE_UNLOCK_PRICE_ID,
   STRIPE_SUB_LIMITED_PRICE_ID: process.env.STRIPE_SUB_LIMITED_PRICE_ID,
   STRIPE_SUB_UNLIMITED_PRICE_ID: process.env.STRIPE_SUB_UNLIMITED_PRICE_ID,
+  GEMINI_PROJECT_ID: process.env.GEMINI_PROJECT_ID,
 });
 
 export function requiredEnv(...keys: string[]) {
