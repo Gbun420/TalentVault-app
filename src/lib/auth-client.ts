@@ -1,14 +1,6 @@
-import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "./supabase/server";
 import { createSupabaseClient } from "./supabase/client";
 
 export type AppRole = "jobseeker" | "employer" | "admin";
-
-export const roleHome: Record<AppRole, string> = {
-  jobseeker: "/jobseeker",
-  employer: "/employer",
-  admin: "/admin",
-};
 
 export type SessionProfile = {
   id: string;
@@ -17,11 +9,11 @@ export type SessionProfile = {
   role: AppRole;
 };
 
-export async function getSessionProfile(): Promise<{
+export async function getClientSessionProfile(): Promise<{
   userId: string | null;
   profile: SessionProfile | null;
 }> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -48,16 +40,4 @@ export async function getSessionProfile(): Promise<{
     userId: user.id,
     profile: profile as SessionProfile,
   };
-}
-
-export async function requireRole(required: AppRole | AppRole[], redirectTo?: string) {
-  const allowed = Array.isArray(required) ? required : [required];
-  const { profile } = await getSessionProfile();
-  if (!profile) {
-    redirect(`/auth/login?redirectTo=${encodeURIComponent(redirectTo || "/")}`);
-  }
-  if (!allowed.includes(profile.role)) {
-    redirect(roleHome[profile.role]);
-  }
-  return profile;
 }

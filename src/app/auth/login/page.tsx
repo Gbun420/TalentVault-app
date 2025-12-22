@@ -4,7 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { roleHome } from "@/lib/auth";
+import { roleHome, AppRole } from "@/lib/auth-constants";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function LoginPage() {
       .eq("id", data.session?.user.id)
       .maybeSingle();
 
-    const role = profile?.role;
+    const role = profile?.role as AppRole | undefined;
     const fallback = redirectTo || (role ? roleHome[role] : "/");
     router.replace(role ? roleHome[role] : fallback);
   };

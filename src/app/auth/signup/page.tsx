@@ -4,7 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { roleHome, AppRole } from "@/lib/auth";
+import { roleHome, AppRole } from "@/lib/auth-constants";
 
 export default function SignupPage() {
   const router = useRouter();
