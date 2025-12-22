@@ -10,6 +10,9 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string(),
   STRIPE_SECRET_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
+  STRIPE_UNLOCK_PRICE_ID: z.string().optional(),
+  STRIPE_SUB_LIMITED_PRICE_ID: z.string().optional(),
+  STRIPE_SUB_UNLIMITED_PRICE_ID: z.string().optional(),
 });
 
 export const env = envSchema.parse({
@@ -19,4 +22,15 @@ export const env = envSchema.parse({
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_UNLOCK_PRICE_ID: process.env.STRIPE_UNLOCK_PRICE_ID,
+  STRIPE_SUB_LIMITED_PRICE_ID: process.env.STRIPE_SUB_LIMITED_PRICE_ID,
+  STRIPE_SUB_UNLIMITED_PRICE_ID: process.env.STRIPE_SUB_UNLIMITED_PRICE_ID,
 });
+
+export function requiredEnv(...keys: string[]) {
+  for (const key of keys) {
+    if (!process.env[key]) {
+      throw new Error(`Missing required env var: ${key}`);
+    }
+  }
+}

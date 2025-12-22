@@ -7,7 +7,7 @@ let stripe: Stripe | undefined;
 export const getStripe = () => {
   if (!stripe) {
     stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-      apiVersion: "2023-10-16", // Specify API version
+      apiVersion: "2025-12-15.clover", // Updated API version
       typescript: true, // Enable TypeScript support
     });
   }
