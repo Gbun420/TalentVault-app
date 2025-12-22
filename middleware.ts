@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { createMiddlewareClient } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { env } from "./src/lib/env";
 
 const jobseekerPrefixes = ["/jobseeker"];
@@ -19,11 +19,19 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  const supabase = createMiddlewareClient(
-    { req, res },
+  const supabase = createServerClient(
+    env.supabaseUrl || "",
+    env.supabaseAnonKey || "",
     {
-      supabaseUrl: env.supabaseUrl || "",
-      supabaseKey: env.supabaseAnonKey || "",
+      cookies: {
+        getAll() {
+          return req.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => req.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value, options }) => res.cookies.set(name, value))
+        },
+      },
     }
   );
 

@@ -7,7 +7,16 @@ export const createSupabaseServerClient = () => {
     throw new Error("Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
   }
 
+  const cookieStore = cookies();
+
   return createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
-    cookies,
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value))
+      },
+    },
   });
 };
