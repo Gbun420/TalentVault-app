@@ -89,7 +89,7 @@ export default function AdminModerationBoard({ profiles }: Props) {
               ))}
             </div>
             <p className="mt-2 text-xs text-slate-600">
-              Experience: {profile.years_experience ?? "N/A"} yrs • Location: {profile.location || "Malta"}
+              Experience: {profile.years_experience ?? "N/A"} yrs • Location: {profile.location || "Not specified"}
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold">
               <button
