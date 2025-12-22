@@ -1,10 +1,9 @@
-"use client";
-
 import { FormEvent, Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { roleHome, AppRole } from "@/lib/auth-constants";
+import { env } from "@/lib/env"; // Import the env object
 
 function LoginForm() {
   const router = useRouter();
@@ -16,7 +15,20 @@ function LoginForm() {
 
   const [usePasswordless, setUsePasswordless] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otpEmail, setOtpEmail] = useState(""); // Store email for OTP verification
   const [otpCode, setOtpCode] = useState("");
+
+  const handleRedirect = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const role = profile?.role as AppRole | undefined;
+    const fallback = redirectTo || (role ? roleHome[role] : "/");
+    router.replace(role ? roleHome[role] : fallback);
+  };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,11 +39,13 @@ function LoginForm() {
     setLoading(true);
 
     if (usePasswordless) {
-      // Send OTP code
+      // Send OTP code (magic link)
+      setOtpEmail(email); // Store email for subsequent OTP verification
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: false,
+          emailRedirectTo: `${env.NEXT_PUBLIC_SITE_URL}/auth/callback`, // Use SITE_URL
         },
       });
 
@@ -57,28 +71,21 @@ function LoginForm() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.session?.user.id)
-      .maybeSingle();
-
-    const role = profile?.role as AppRole | undefined;
-    const fallback = redirectTo || (role ? roleHome[role] : "/");
-    router.replace(role ? roleHome[role] : fallback);
+    if (data.user) {
+      await handleRedirect(data.user.id);
+    }
   };
 
   const onOtpSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email") || "").trim();
     const code = String(formData.get("otp") || "").trim();
     
     setError(null);
     setLoading(true);
 
     const { data, error: verifyError } = await supabase.auth.verifyOtp({
-      email,
+      email: otpEmail, // Use stored email
       token: code,
       type: "email",
     });
@@ -89,15 +96,9 @@ function LoginForm() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.session?.user.id)
-      .maybeSingle();
-
-    const role = profile?.role as AppRole | undefined;
-    const fallback = redirectTo || (role ? roleHome[role] : "/");
-    router.replace(role ? roleHome[role] : fallback);
+    if (data.user) {
+      await handleRedirect(data.user.id);
+    }
   };
 
   return (
@@ -117,6 +118,9 @@ function LoginForm() {
               type="email"
               required
               className="input mt-1"
+              defaultValue={otpEmail} // Prefill email if sending OTP
+              onChange={(e) => setOtpEmail(e.target.value)}
+              readOnly={usePasswordless && showOtpInput}
             />
           </div>
           {!usePasswordless && !showOtpInput && (

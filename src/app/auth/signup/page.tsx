@@ -4,7 +4,8 @@ import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { roleHome, AppRole } from "@/lib/auth-constants";
+import { AppRole } from "@/lib/auth-constants";
+import { env } from "@/lib/env"; // Import the env object
 
 export default function SignupPage() {
   const router = useRouter();
@@ -22,11 +23,11 @@ export default function SignupPage() {
     setError(null);
     setLoading(true);
 
-    const { data, error: signupError } = await supabase.auth.signUp({
+    const { error: signupError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/verify`,
+        emailRedirectTo: `${env.NEXT_PUBLIC_SITE_URL}/auth/callback?role=${encodeURIComponent(role)}&full_name=${encodeURIComponent(full_name)}`, // Use SITE_URL and pass role and full_name
       },
     });
 
@@ -36,9 +37,8 @@ export default function SignupPage() {
       return;
     }
 
-    // For OTP flow, redirect to verification page
-    const verifyUrl = `/auth/verify?email=${encodeURIComponent(email)}&full_name=${encodeURIComponent(full_name)}&role=${encodeURIComponent(role)}`;
-    router.push(verifyUrl);
+    // After signup, redirect to a generic message page, or back to login with a message
+    router.push("/auth/verify-email-message"); // A new page to inform user to check email
     return;
   };
 
@@ -48,7 +48,7 @@ export default function SignupPage() {
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">Create account</h1>
           <p className="text-sm text-slate-600">
-            Choose whether you are hiring or publishing your CV.
+            Choose whether you are hiring or publishing your Profile.
           </p>
         </div>
         <form className="space-y-4" onSubmit={onSubmit}>

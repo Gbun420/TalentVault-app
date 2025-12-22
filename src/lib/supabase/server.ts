@@ -1,22 +1,25 @@
-import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import { env } from "../env";
+import { cookies } from "next/headers";
+import { env } from "@/lib/env";
 
-export const createSupabaseServerClient = async () => {
-  if (!env.supabaseUrl || !env.supabaseAnonKey) {
-    throw new Error("Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
-  }
+export const createSupabaseServerClient = () => {
+  const cookieStore = cookies();
 
-  const cookieStore = await cookies();
-
-  return createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll()
+  return createServerClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options) {
+          cookieStore.set(name, value, options);
+        },
+        remove(name: string, options) {
+          cookieStore.set(name, "", options);
+        },
       },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value))
-      },
-    },
-  });
+    }
+  );
 };

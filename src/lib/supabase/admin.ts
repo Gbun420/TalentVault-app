@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import { env, requiredEnv } from "../env";
+import { env } from "@/lib/env";
 
-requiredEnv("supabaseUrl", "supabaseServiceRole");
-
-export const supabaseAdmin = createClient(env.supabaseUrl!, env.supabaseServiceRole!);
+export const supabaseAdmin = createClient(
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_KEY
+);
