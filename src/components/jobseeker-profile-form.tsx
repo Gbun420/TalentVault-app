@@ -270,287 +270,294 @@ export default function JobseekerProfileForm({
   };
 
   return (
-    <div className="card p-8">
-      <div className="flex flex-col gap-1">
+    <form className="space-y-6" onSubmit={onSubmit}>
+      <div className="card p-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
           Jobseeker profile
         </p>
-        <h1 className="text-2xl font-semibold text-slate-900">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900">
           Publish your CV on TalentVault for Malta employers to discover
         </h1>
-        <p className="text-sm text-slate-600">
+        <p className="mt-2 text-sm text-slate-600">
           Structured profile first; optional PDF upload for completeness.
         </p>
       </div>
-      <form className="mt-6 space-y-8" onSubmit={onSubmit}>
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-slate-900">Personal & CV basics</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Full name">
-              <input
-                name="full_name"
-                defaultValue={fullName}
-                required
-                className="input"
-              />
-            </Field>
-            <Field label="Location">
-              <input
-                name="location"
-                defaultValue={initialProfile?.location || "Malta"}
-                required
-                className="input"
-              />
-            </Field>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Contact email">
-              <input
-                name="contact_email"
-                type="email"
-                defaultValue={initialContact?.contact_email || ""}
-                required
-                className="input"
-              />
-            </Field>
-            <Field label="Phone (optional)">
-              <input
-                name="phone"
-                defaultValue={initialContact?.phone || ""}
-                className="input"
-              />
-            </Field>
-          </div>
-          <Field label="Headline">
+
+      <div className="card space-y-4 p-6">
+        <h2 className="text-lg font-semibold text-slate-900">Personal info</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Full name">
             <input
-              name="headline"
-              defaultValue={initialProfile?.headline || ""}
+              name="full_name"
+              defaultValue={fullName}
               required
               className="input"
             />
           </Field>
-          <Field label="Summary">
-            <textarea
-              name="summary"
-              rows={4}
-              defaultValue={initialProfile?.summary || ""}
+          <Field label="Location">
+            <input
+              name="location"
+              defaultValue={initialProfile?.location || "Malta"}
+              required
               className="input"
             />
           </Field>
-          <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Availability">
-              <input
-                name="availability"
-                defaultValue={initialProfile?.availability || "Immediately"}
-                required
-                className="input"
-              />
-            </Field>
-            <Field label="Work permit status">
-              <input
-                name="work_permit_status"
-                defaultValue={initialProfile?.work_permit_status || "Eligible to work in Malta"}
-                className="input"
-              />
-            </Field>
-            <Field label="Salary expectation (EUR)">
-              <input
-                name="salary_expectation_eur"
-                type="number"
-                min={0}
-                defaultValue={initialProfile?.salary_expectation_eur || ""}
-                className="input"
-              />
-            </Field>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Years of experience">
-              <input
-                name="years_experience"
-                type="number"
-                min={0}
-                max={60}
-                defaultValue={initialProfile?.years_experience || ""}
-                className="input"
-              />
-            </Field>
-            <Field label="Visibility">
-              <select
-                name="visibility"
-                defaultValue={initialProfile?.visibility || "public"}
-                className="input"
-              >
-                <option value="public">Public</option>
-                <option value="employers_only">Recruiters only</option>
-                <option value="hidden">Hidden</option>
-              </select>
-            </Field>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-slate-700">Skills</label>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="badge cursor-pointer"
-                  onClick={() => removeSkill(skill)}
-                  title="Click to remove"
-                >
-                  {skill} ✕
-                </span>
-              ))}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <input
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSkill();
-                  }
-                }}
-                placeholder="Type a skill and press Enter"
-                className="input flex-1"
-              />
-              <button
-                type="button"
-                onClick={addSkill}
-                className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </section>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Contact email">
+            <input
+              name="contact_email"
+              type="email"
+              defaultValue={initialContact?.contact_email || ""}
+              required
+              className="input"
+            />
+          </Field>
+          <Field label="Phone (optional)">
+            <input
+              name="phone"
+              defaultValue={initialContact?.phone || ""}
+              className="input"
+            />
+          </Field>
+        </div>
+      </div>
 
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-900">Experience</h2>
-            <button
-              type="button"
-              onClick={addExperience}
-              className="rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+      <div className="card space-y-4 p-6">
+        <h2 className="text-lg font-semibold text-slate-900">Profile basics</h2>
+        <Field label="Headline">
+          <input
+            name="headline"
+            defaultValue={initialProfile?.headline || ""}
+            required
+            className="input"
+          />
+        </Field>
+        <Field label="Summary">
+          <textarea
+            name="summary"
+            rows={4}
+            defaultValue={initialProfile?.summary || ""}
+            className="input"
+          />
+        </Field>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Field label="Availability">
+            <input
+              name="availability"
+              defaultValue={initialProfile?.availability || "Immediately"}
+              required
+              className="input"
+            />
+          </Field>
+          <Field label="Work permit status">
+            <input
+              name="work_permit_status"
+              defaultValue={initialProfile?.work_permit_status || "Eligible to work in Malta"}
+              className="input"
+            />
+          </Field>
+          <Field label="Salary expectation (EUR)">
+            <input
+              name="salary_expectation_eur"
+              type="number"
+              min={0}
+              defaultValue={initialProfile?.salary_expectation_eur || ""}
+              className="input"
+            />
+          </Field>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Years of experience">
+            <input
+              name="years_experience"
+              type="number"
+              min={0}
+              max={60}
+              defaultValue={initialProfile?.years_experience || ""}
+              className="input"
+            />
+          </Field>
+          <Field label="Visibility">
+            <select
+              name="visibility"
+              defaultValue={initialProfile?.visibility || "public"}
+              className="input"
             >
-              Add role
-            </button>
-          </div>
-          {experiences.length === 0 ? (
-            <p className="text-sm text-slate-600">No experience added yet.</p>
-          ) : (
-            <div className="space-y-4">
-              {experiences.map((exp, idx) => (
-                <div key={idx} className="rounded-lg border border-slate-200 p-4">
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <Field label="Job title">
-                      <input
-                        value={exp.title}
-                        onChange={(e) => updateExperience(idx, "title", e.target.value)}
-                        className="input"
-                      />
-                    </Field>
-                    <Field label="Company">
-                      <input
-                        value={exp.company}
-                        onChange={(e) => updateExperience(idx, "company", e.target.value)}
-                        className="input"
-                      />
-                    </Field>
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-3">
-                    <Field label="Start date">
-                      <input
-                        type="date"
-                        value={exp.start_date ?? ""}
-                        onChange={(e) => updateExperience(idx, "start_date", e.target.value)}
-                        className="input"
-                      />
-                    </Field>
-                    <Field label="End date">
-                      <input
-                        type="date"
-                        value={exp.end_date ?? ""}
-                        onChange={(e) => updateExperience(idx, "end_date", e.target.value)}
-                        disabled={exp.is_current || false}
-                        className="input"
-                      />
-                    </Field>
-                    <Field label="Current role?">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(exp.is_current)}
-                        onChange={(e) => updateExperience(idx, "is_current", e.target.checked)}
-                        className="h-4 w-4 accent-blue-700"
-                      />
-                    </Field>
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <Field label="Location (optional)">
-                      <input
-                        value={exp.location ?? ""}
-                        onChange={(e) => updateExperience(idx, "location", e.target.value)}
-                        className="input"
-                      />
-                    </Field>
-                  </div>
-                  <Field label="Description">
-                    <textarea
-                      value={exp.description ?? ""}
-                      onChange={(e) => updateExperience(idx, "description", e.target.value)}
-                      rows={3}
+              <option value="public">Public</option>
+              <option value="employers_only">Recruiters only</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </Field>
+        </div>
+      </div>
+
+      <div className="card space-y-3 p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Skills</h2>
+          <span className="text-xs text-slate-500">Click a tag to remove</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill) => (
+            <span
+              key={skill}
+              className="badge cursor-pointer"
+              onClick={() => removeSkill(skill)}
+              title="Click to remove"
+            >
+              {skill} ✕
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <input
+            value={skillInput}
+            onChange={(e) => setSkillInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addSkill();
+              }
+            }}
+            placeholder="Type a skill and press Enter"
+            className="input flex-1"
+          />
+          <button
+            type="button"
+            onClick={addSkill}
+            className="btn btn-secondary"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div className="card space-y-4 p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Experience</h2>
+          <button
+            type="button"
+            onClick={addExperience}
+            className="btn btn-secondary"
+          >
+            Add role
+          </button>
+        </div>
+        {experiences.length === 0 ? (
+          <p className="text-sm text-slate-600">No experience added yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {experiences.map((exp, idx) => (
+              <div key={idx} className="rounded-lg border border-slate-200 p-4">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Field label="Job title">
+                    <input
+                      value={exp.title}
+                      onChange={(e) => updateExperience(idx, "title", e.target.value)}
                       className="input"
                     />
                   </Field>
-                  <div className="mt-2 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => removeExperience(idx)}
-                      className="text-sm font-semibold text-red-600 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
+                  <Field label="Company">
+                    <input
+                      value={exp.company}
+                      onChange={(e) => updateExperience(idx, "company", e.target.value)}
+                      className="input"
+                    />
+                  </Field>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <Field label="Start date">
+                    <input
+                      type="date"
+                      value={exp.start_date ?? ""}
+                      onChange={(e) => updateExperience(idx, "start_date", e.target.value)}
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="End date">
+                    <input
+                      type="date"
+                      value={exp.end_date ?? ""}
+                      onChange={(e) => updateExperience(idx, "end_date", e.target.value)}
+                      disabled={exp.is_current || false}
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="Current role?">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(exp.is_current)}
+                      onChange={(e) => updateExperience(idx, "is_current", e.target.checked)}
+                      className="h-4 w-4 accent-blue-700"
+                    />
+                  </Field>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Field label="Location (optional)">
+                    <input
+                      value={exp.location ?? ""}
+                      onChange={(e) => updateExperience(idx, "location", e.target.value)}
+                      className="input"
+                    />
+                  </Field>
+                </div>
+                <Field label="Description">
+                  <textarea
+                    value={exp.description ?? ""}
+                    onChange={(e) => updateExperience(idx, "description", e.target.value)}
+                    rows={3}
+                    className="input"
+                  />
+                </Field>
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => removeExperience(idx)}
+                    className="btn btn-secondary text-xs"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">CV PDF (optional)</h2>
-          <input
-            name="cv_file"
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setCvFile(e.target.files?.[0] || null)}
-            className="text-sm text-slate-700"
-          />
-          {initialContact?.cv_storage_path ? (
-            <p className="text-xs text-slate-600">
-              Existing file path: {initialContact.cv_storage_path}
-            </p>
-          ) : (
-            <p className="text-xs text-slate-600">Upload a PDF to share on unlock.</p>
-          )}
-        </section>
-
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {message ? <p className="text-sm text-green-700">{message}</p> : null}
-
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-800 disabled:opacity-60"
-          >
-            {saving ? "Saving..." : "Save profile"}
-          </button>
-          <p className="text-xs text-slate-500">
-            Visibility and contact gating follow your selection and unlock rules.
+      <div className="card space-y-4 p-6">
+        <h2 className="text-lg font-semibold text-slate-900">CV file (optional)</h2>
+        <input
+          name="cv_file"
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => setCvFile(e.target.files?.[0] || null)}
+          className="text-sm text-slate-700"
+        />
+        {initialContact?.cv_storage_path ? (
+          <p className="text-xs text-slate-600">
+            Existing file path: {initialContact.cv_storage_path}
           </p>
+        ) : (
+          <p className="text-xs text-slate-600">Upload a PDF to share on unlock.</p>
+        )}
+      </div>
+
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {message ? <p className="text-sm text-green-700">{message}</p> : null}
+
+      <div className="card flex items-center justify-between gap-3 p-4">
+        <div className="text-xs text-slate-600">
+          Visibility and contact gating follow your selection and unlock rules.
         </div>
-      </form>
-    </div>
+        <button
+          type="submit"
+          disabled={saving}
+          className="btn btn-primary"
+        >
+          {saving ? "Saving..." : "Save profile"}
+        </button>
+      </div>
+    </form>
   );
 }
 

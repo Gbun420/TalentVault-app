@@ -214,14 +214,14 @@ export default function EmployerSearch() {
           <button
             onClick={() => startSubscription("limited")}
             disabled={subscribing !== null}
-            className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-800 disabled:opacity-60"
+            className="btn btn-primary"
           >
             {subscribing === "limited" ? "Redirecting..." : "Subscribe (Limited unlocks)"}
           </button>
           <button
             onClick={() => startSubscription("unlimited")}
             disabled={subscribing !== null}
-            className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-60"
+            className="btn btn-secondary"
           >
             {subscribing === "unlimited" ? "Redirecting..." : "Subscribe (Unlimited)"}
           </button>
@@ -302,7 +302,7 @@ export default function EmployerSearch() {
           <button
             onClick={search}
             disabled={loading}
-            className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-800 disabled:opacity-60"
+            className="btn btn-primary"
           >
             {loading ? "Searching..." : "Search"}
           </button>
@@ -316,7 +316,7 @@ export default function EmployerSearch() {
               setWorkPermit("");
               search();
             }}
-            className="text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4"
+            className="btn btn-secondary"
           >
             Clear filters
           </button>
@@ -333,44 +333,52 @@ export default function EmployerSearch() {
           const maskedName = maskName(cv.full_name, isUnlocked);
           const expLabel = cv.years_experience != null ? `${cv.years_experience} yrs` : "N/A";
           return (
-            <div key={cv.id} className="card p-5">
-              <div className="flex items-center justify-between">
-                <div>
+            <div key={cv.id} className="card space-y-3 p-5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1">
                   <p className="text-sm font-semibold text-slate-500">{maskedName}</p>
                   <h3 className="text-lg font-semibold text-slate-900">{cv.headline}</h3>
+                  {!isUnlocked ? (
+                    <span className="badge bg-slate-200 text-slate-700">Locked</span>
+                  ) : (
+                    <span className="badge bg-green-100 text-green-700">Unlocked</span>
+                  )}
                 </div>
-                {!isUnlocked ? (
-                  <button
-                    onClick={async () => {
-                      setUnlocking(cv.id);
-                      // Try subscription unlock first if active
-                      const hasActiveSub = subscription?.status === "active";
-                      if (hasActiveSub) {
-                        const result = await trySubscriptionUnlock(cv.id);
-                        if (result === true) return;
-                        if (result === null) return; // error already set
-                        // fallthrough to pay-per-unlock if limit reached
-                      }
-                      await unlock(cv.id);
-                    }}
-                    disabled={unlocking === cv.id}
-                    className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-blue-800 disabled:opacity-60"
-                  >
-                    {unlocking === cv.id ? "Unlocking..." : "Unlock contact"}
-                  </button>
-                ) : (
-                  <span className="badge bg-green-100 text-green-700">Unlocked</span>
-                )}
+                <div className="text-right">
+                  {!isUnlocked ? (
+                    <button
+                      onClick={async () => {
+                        setUnlocking(cv.id);
+                        const hasActiveSub = subscription?.status === "active";
+                        if (hasActiveSub) {
+                          const result = await trySubscriptionUnlock(cv.id);
+                          if (result === true) return;
+                          if (result === null) return;
+                        }
+                        await unlock(cv.id);
+                      }}
+                      disabled={unlocking === cv.id}
+                      className="btn btn-primary text-xs"
+                    >
+                      {unlocking === cv.id ? "Unlocking..." : "Unlock contact"}
+                    </button>
+                  ) : (
+                    <span className="text-xs font-semibold text-green-700">Contact available</span>
+                  )}
+                  {!isUnlocked ? (
+                    <p className="mt-1 text-[11px] text-slate-600">Paid unlock or active subscription</p>
+                  ) : null}
+                </div>
               </div>
-              <p className="mt-2 text-sm text-slate-700 line-clamp-3">{cv.summary}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <p className="text-sm text-slate-700 line-clamp-3">{cv.summary}</p>
+              <div className="flex flex-wrap gap-2">
                 {cv.skills?.slice(0, 8).map((skill) => (
                   <span key={skill} className="badge">
                     {skill}
                   </span>
                 ))}
               </div>
-              <div className="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-3">
+              <div className="grid gap-2 text-xs text-slate-600 sm:grid-cols-3">
                 <p>
                   <span className="font-semibold text-slate-800">Experience:</span> {expLabel}
                 </p>
@@ -383,16 +391,16 @@ export default function EmployerSearch() {
                   {cv.location || "Malta"}
                 </p>
               </div>
-              <p className="mt-1 text-xs text-slate-600">
+              <p className="text-xs text-slate-600">
                 <span className="font-semibold text-slate-800">Work permit:</span>{" "}
                 {cv.work_permit_status || "Unknown"}
               </p>
               {!isUnlocked ? (
-                <p className="mt-2 text-xs text-slate-500">
-                  Contact details locked. Unlock to see email/phone/CV file.
+                <p className="text-xs text-slate-500">
+                  Contact details are locked until you unlock or use your subscription.
                 </p>
               ) : (
-                <p className="mt-2 text-xs text-green-700">
+                <p className="text-xs text-green-700">
                   Contact unlocked. View details on the candidate page.
                 </p>
               )}

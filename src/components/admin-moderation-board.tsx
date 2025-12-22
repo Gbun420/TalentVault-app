@@ -95,28 +95,28 @@ export default function AdminModerationBoard({ profiles }: Props) {
               <button
                 onClick={() => mutate(profile.id, "flag")}
                 disabled={loadingId === profile.id}
-                className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-amber-800 hover:bg-amber-100 disabled:opacity-60"
+                className="btn btn-secondary text-xs"
               >
                 Flag
               </button>
               <button
                 onClick={() => mutate(profile.id, "unflag")}
                 disabled={loadingId === profile.id}
-                className="rounded-md border border-slate-200 px-3 py-2 text-slate-800 hover:bg-slate-50 disabled:opacity-60"
+                className="btn btn-secondary text-xs"
               >
                 Unflag
               </button>
               <button
                 onClick={() => mutate(profile.id, "hide")}
                 disabled={loadingId === profile.id}
-                className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-700 hover:bg-red-100 disabled:opacity-60"
+                className="btn btn-destructive text-xs"
               >
                 Hide (suspend)
               </button>
               <button
                 onClick={() => mutate(profile.id, "unhide")}
                 disabled={loadingId === profile.id}
-                className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100 disabled:opacity-60"
+                className="btn btn-secondary text-xs"
               >
                 Unhide
               </button>
