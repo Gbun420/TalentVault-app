@@ -42,7 +42,7 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <AdminModerationBoard profiles={profiles ?? []} />
+      <AdminModerationBoard profiles={profiles as any ?? []} />
     </div>
   );
 }
