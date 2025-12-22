@@ -72,21 +72,27 @@ async function handleSubscriptionEvent(subscription: Stripe.Subscription) {
   const employerId = subscription.metadata?.employer_id as string | undefined;
   const planCode = subscription.metadata?.plan_code as string | undefined;
   if (!employerId || !planCode) return;
+  const sub = subscription as Stripe.Subscription & {
+    current_period_start?: number;
+    current_period_end?: number;
+    cancel_at?: number;
+    canceled_at?: number;
+  };
   await supabaseAdmin.from("employer_subscriptions").upsert({
     employer_id: employerId,
     plan_code: planCode,
     stripe_customer_id: subscription.customer?.toString() || null,
     stripe_subscription_id: subscription.id,
     status: mapStatus(subscription.status),
-    current_period_start: (subscription as any).current_period_start
-      ? new Date((subscription as any).current_period_start * 1000).toISOString()
+    current_period_start: sub.current_period_start
+      ? new Date(sub.current_period_start * 1000).toISOString()
       : null,
-    current_period_end: (subscription as any).current_period_end
-      ? new Date((subscription as any).current_period_end * 1000).toISOString()
+    current_period_end: sub.current_period_end
+      ? new Date(sub.current_period_end * 1000).toISOString()
       : null,
-    cancel_at: (subscription as any).cancel_at ? new Date((subscription as any).cancel_at * 1000).toISOString() : null,
-    canceled_at: (subscription as any).canceled_at
-      ? new Date((subscription as any).canceled_at * 1000).toISOString()
+    cancel_at: sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : null,
+    canceled_at: sub.canceled_at
+      ? new Date(sub.canceled_at * 1000).toISOString()
       : null,
     updated_at: new Date().toISOString(),
   });
