@@ -161,7 +161,8 @@ export default function JobseekerProfileForm({
     const parsed = profileSchema.safeParse(payload);
     if (!parsed.success) {
       setSaving(false);
-      setError(parsed.error.errors[0]?.message || "Please fix the highlighted issues.");
+      const message = parsed.error.issues?.[0]?.message || "Please fix the highlighted issues.";
+      setError(message);
       return;
     }
 

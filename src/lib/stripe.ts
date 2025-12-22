@@ -3,6 +3,4 @@ import { env, requiredEnv } from "./env";
 
 requiredEnv("stripeSecretKey");
 
-export const stripe = new Stripe(env.stripeSecretKey!, {
-  apiVersion: "2024-06-20",
-});
+export const stripe = new Stripe(env.stripeSecretKey!);
