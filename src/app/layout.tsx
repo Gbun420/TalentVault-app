@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TalentVault",
-  description: "GDPR-aware CV directory for Malta employers and jobseekers.",
+  description: "GDPR-aware Profile directory for employers and jobseekers.",
 };
 
 export default function RootLayout({
@@ -49,10 +49,10 @@ export default function RootLayout({
         <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
         <footer className="border-t border-slate-200 bg-white/70">
           <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-6 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
-            <span>Built for Malta-only hiring.</span>
+            <span>Built for local hiring.</span>
             <div className="flex gap-4">
               <Link href="/jobseeker" className="hover:text-blue-700">
-                Post/Update your CV
+                Post/Update your Profile
               </Link>
               <Link href="/employer" className="hover:text-blue-700">
                 Browse profiles

@@ -1,6 +1,15 @@
 import Stripe from "stripe";
-import { env, requiredEnv } from "./env";
+import { env } from "@/lib/env";
 
-requiredEnv("stripeSecretKey");
+// Lazy initialization of Stripe to prevent build failures if env var is not available at build time
+let stripe: Stripe | undefined;
 
-export const stripe = new Stripe(env.stripeSecretKey!);
+export const getStripe = () => {
+  if (!stripe) {
+    stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+      apiVersion: "2023-10-16", // Specify API version
+      typescript: true, // Enable TypeScript support
+    });
+  }
+  return stripe;
+};

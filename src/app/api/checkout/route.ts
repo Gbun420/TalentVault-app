@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
-import { env, requiredEnv } from "@/lib/env";
+import { getStripe } from "@/lib/stripe"; // Changed import
+import { env } from "@/lib/env"; // Removed requiredEnv
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 type Body =
   | { mode: "unlock"; jobseekerId: string }
   | { mode: "subscription"; subscriptionType: "limited" | "unlimited" };
-
-requiredEnv("stripeSecretKey");
 
 export async function POST(request: Request) {
   try {
@@ -34,8 +32,10 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as Body;
 
+    const stripe = getStripe(); // Get Stripe instance
+
     if (body.mode === "unlock") {
-      if (!env.stripeUnlockPriceId) {
+      if (!env.STRIPE_UNLOCK_PRICE_ID) { // Corrected env var name
         return NextResponse.json({ error: "Unlock price not configured" }, { status: 500 });
       }
       if (!body.jobseekerId) {
@@ -53,13 +53,13 @@ export async function POST(request: Request) {
         return NextResponse.json({ alreadyUnlocked: true });
       }
 
-      const price = await stripe.prices.retrieve(env.stripeUnlockPriceId);
+      const price = await stripe.prices.retrieve(env.STRIPE_UNLOCK_PRICE_ID); // Corrected env var name
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         customer_email: user.email ?? undefined,
-        line_items: [{ price: env.stripeUnlockPriceId, quantity: 1 }],
-        success_url: `${env.siteUrl}/employer/search?status=success`,
-        cancel_url: `${env.siteUrl}/employer/search?status=cancelled`,
+        line_items: [{ price: env.STRIPE_UNLOCK_PRICE_ID, quantity: 1 }], // Corrected env var name
+        success_url: `${env.NEXT_PUBLIC_SITE_URL}/employer/search?status=success`, // Corrected env var name
+        cancel_url: `${env.NEXT_PUBLIC_SITE_URL}/employer/search?status=cancelled`, // Corrected env var name
         metadata: {
           payment_type: "unlock",
           employer_id: user.id,
@@ -84,8 +84,8 @@ export async function POST(request: Request) {
     if (body.mode === "subscription") {
       const priceId =
         body.subscriptionType === "limited"
-          ? env.stripeSubLimitedPriceId
-          : env.stripeSubUnlimitedPriceId;
+          ? env.STRIPE_SUB_LIMITED_PRICE_ID // Corrected env var name
+          : env.STRIPE_SUB_UNLIMITED_PRICE_ID; // Corrected env var name
 
       if (!priceId) {
         return NextResponse.json({ error: "Subscription price not configured" }, { status: 500 });
@@ -98,8 +98,8 @@ export async function POST(request: Request) {
         mode: "subscription",
         customer_email: user.email ?? undefined,
         line_items: [{ price: priceId, quantity: 1 }],
-        success_url: `${env.siteUrl}/employer/search?status=success`,
-        cancel_url: `${env.siteUrl}/employer/search?status=cancelled`,
+        success_url: `${env.NEXT_PUBLIC_SITE_URL}/employer/search?status=success`, // Corrected env var name
+        cancel_url: `${env.NEXT_PUBLIC_SITE_URL}/employer/search?status=cancelled`, // Corrected env var name
         metadata: {
           payment_type: "subscription",
           employer_id: user.id,

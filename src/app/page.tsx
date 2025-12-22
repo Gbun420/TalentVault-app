@@ -11,17 +11,17 @@ export default function Home() {
               Stop posting jobs. Start hiring.
             </h1>
             <p className="text-lg text-slate-800">
-              Search real CVs from Malta-based candidates and contact them instantly — without job ads or recruiter fees.
+              Search real Profiles from local candidates and contact them instantly — without job ads or recruiter fees.
             </p>
             <p className="text-sm text-slate-600">
               Pay only when you unlock a candidate. No subscriptions required.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/employer" className="btn btn-primary w-full sm:w-auto text-base">
-                Browse CVs (Employers)
+                Browse Profiles (Employers)
               </Link>
               <Link href="/jobseeker" className="btn btn-secondary w-full sm:w-auto text-base">
-                Post Your CV (Jobseekers)
+                Post Your Profile (Jobseekers)
               </Link>
             </div>
           </div>
@@ -50,9 +50,9 @@ export default function Home() {
 
       <section className="bg-white">
         <div className="mx-auto grid max-w-5xl gap-4 px-6 sm:grid-cols-3">
-          <ValueCard title="Search CVs instantly" body="Browse verified Malta-based profiles without posting a job." />
+          <ValueCard title="Search Profiles instantly" body="Browse verified local profiles without posting a job." />
           <ValueCard title="Unlock only when ready" body="See contact details only when you choose to unlock." />
-          <ValueCard title="Malta-only, GDPR-ready" body="Local talent, compliant storage, and visibility controls." />
+          <ValueCard title="Local only, GDPR-ready" body="Local talent, compliant storage, and visibility controls." />
         </div>
       </section>
 
@@ -84,7 +84,7 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-6 py-6 space-y-2">
           <h4 className="text-base font-semibold text-slate-900">Trust and safety</h4>
           <ul className="grid gap-2 text-sm text-slate-700 sm:grid-cols-2 md:grid-cols-4">
-            <li>Malta-only platform — built for local hiring.</li>
+            <li>Local-only platform — built for local hiring.</li>
             <li>GDPR-compliant — sensitive data stored securely.</li>
             <li>No AI decision-making — humans stay in control.</li>
             <li>Full visibility control — jobseekers choose who sees contact info.</li>
@@ -94,7 +94,7 @@ export default function Home() {
 
       <section className="bg-white">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 px-6 py-10 text-center">
-          <h2 className="text-3xl font-semibold text-slate-900">Hiring in Malta shouldn’t take weeks.</h2>
+          <h2 className="text-3xl font-semibold text-slate-900">Local hiring shouldn’t take weeks.</h2>
           <Link href="/employer" className="btn btn-primary text-base">
             Employer Access
           </Link>

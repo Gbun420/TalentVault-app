@@ -54,9 +54,9 @@ export default function AdminModerationBoard({ profiles }: Props) {
   return (
     <div className="card p-6">
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold text-slate-900">Moderate CVs</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Moderate Profiles</h2>
         <p className="text-sm text-slate-600">
-          Flag, unflag, or hide CVs that appear abusive or fake. Hidden CVs are removed from the
+          Flag, unflag, or hide Profiles that appear abusive or fake. Hidden Profiles are removed from the
           directory.
         </p>
       </div>

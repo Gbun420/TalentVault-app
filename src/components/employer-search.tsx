@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-type CV = {
+type TalentVaultProfile = { // Renamed from CV
   id: string;
   full_name: string;
   headline: string;
@@ -38,13 +38,19 @@ export default function EmployerSearch() {
   const [availability, setAvailability] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [workPermit, setWorkPermit] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-  const [cvs, setCvs] = useState<CV[]>([]);
+  const [loading, setLoading] = useState(true); // Changed to true for initial loading
+  const [profiles, setProfiles] = useState<TalentVaultProfile[]>([]); // Renamed from cvs
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState<string | null>(null);
   const [subscribing, setSubscribing] = useState<"limited" | "unlimited" | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchInitialData = async () => {
+    setLoading(true);
+    await Promise.all([search(), fetchUnlocks(), fetchSubscription()]);
+    setLoading(false);
+  };
 
   const fetchUnlocks = async () => {
     const { data, error } = await supabase.from("unlocked_contacts").select("jobseeker_id");
@@ -71,9 +77,8 @@ export default function EmployerSearch() {
   };
 
   const search = async () => {
-    setLoading(true);
     setError(null);
-    let query = supabase.from("public_cv_directory").select(
+    let query = supabase.from("public_profile_directory").select( // Renamed table reference
       "id, full_name, headline, summary, skills, preferred_roles, years_experience, availability, work_permit_status, location"
     );
 
@@ -116,11 +121,10 @@ export default function EmployerSearch() {
     const { data, error } = await query.limit(50);
     if (error) {
       setError(error.message);
-      setCvs([]);
+      setProfiles([]); // Renamed from setCvs
     } else {
-      setCvs(data || []);
+      setProfiles(data || []); // Renamed from setCvs
     }
-    setLoading(false);
   };
 
   const unlock = async (jobseekerId: string) => {
@@ -152,9 +156,7 @@ export default function EmployerSearch() {
   };
 
   useEffect(() => {
-    search();
-    fetchUnlocks();
-    fetchSubscription();
+    fetchInitialData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -202,6 +204,35 @@ export default function EmployerSearch() {
     return null;
   };
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="card p-6 animate-pulse">
+          <div className="h-4 bg-slate-200 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+        </div>
+        <div className="card p-6 animate-pulse">
+          <div className="h-4 bg-slate-200 rounded w-1/4 mb-4"></div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="h-10 bg-slate-200 rounded"></div>
+            <div className="h-10 bg-slate-200 rounded"></div>
+            <div className="h-10 bg-slate-200 rounded"></div>
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+            <div className="card p-5 animate-pulse">
+                <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+            </div>
+            <div className="card p-5 animate-pulse">
+                <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+            </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="card p-6">
@@ -226,7 +257,7 @@ export default function EmployerSearch() {
             {subscribing === "unlimited" ? "Redirecting..." : "Subscribe (Unlimited)"}
           </button>
           <p className="text-xs text-slate-600">
-            You can still pay-per-unlock on each CV card if you prefer.
+            You can still pay-per-unlock on each Profile card if you prefer.
           </p>
         </div>
         {subscription ? (
@@ -239,9 +270,9 @@ export default function EmployerSearch() {
       </div>
 
       <div className="card p-6">
-        <h1 className="text-xl font-semibold text-slate-900">Search CVs</h1>
+        <h1 className="text-xl font-semibold text-slate-900">Search Profiles</h1>
         <p className="text-sm text-slate-600">
-          Search Malta-based CVs. Names and contact are blurred until unlocked.
+          Search local Profiles. Names and contact are blurred until unlocked.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           <Field label="Skills (comma separated)">
@@ -265,7 +296,7 @@ export default function EmployerSearch() {
               className="input"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Malta"
+              placeholder="e.g., City, Country" // Updated placeholder
             />
           </Field>
           <Field label="Availability">
@@ -281,7 +312,7 @@ export default function EmployerSearch() {
               className="input"
               value={workPermit}
               onChange={(e) => setWorkPermit(e.target.value)}
-              placeholder="Eligible to work in Malta"
+              placeholder="e.g., EU Citizen, Work Permit" // Updated placeholder
             />
           </Field>
           <Field label="Experience">
@@ -325,19 +356,19 @@ export default function EmployerSearch() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {cvs.length === 0 && !loading ? (
-          <p className="text-sm text-slate-600">No CVs match these filters yet.</p>
+        {profiles.length === 0 && !loading ? (
+          <p className="text-sm text-slate-600">No Profiles match these filters yet.</p> // Renamed from CVs
         ) : null}
-        {cvs.map((cv) => {
-          const isUnlocked = unlocked.has(cv.id);
-          const maskedName = maskName(cv.full_name, isUnlocked);
-          const expLabel = cv.years_experience != null ? `${cv.years_experience} yrs` : "N/A";
+        {profiles.map((profile) => { // Renamed from cvs.map((cv)
+          const isUnlocked = unlocked.has(profile.id);
+          const maskedName = maskName(profile.full_name, isUnlocked);
+          const expLabel = profile.years_experience != null ? `${profile.years_experience} yrs` : "N/A";
           return (
-            <div key={cv.id} className="card space-y-3 p-5">
+            <div key={profile.id} className="card space-y-3 p-5">
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-slate-500">{maskedName}</p>
-                  <h3 className="text-lg font-semibold text-slate-900">{cv.headline}</h3>
+                  <h3 className="text-lg font-semibold text-slate-900">{profile.headline}</h3>
                   {!isUnlocked ? (
                     <span className="badge bg-slate-200 text-slate-700">Locked</span>
                   ) : (
@@ -348,19 +379,19 @@ export default function EmployerSearch() {
                   {!isUnlocked ? (
                     <button
                       onClick={async () => {
-                        setUnlocking(cv.id);
+                        setUnlocking(profile.id);
                         const hasActiveSub = subscription?.status === "active";
                         if (hasActiveSub) {
-                          const result = await trySubscriptionUnlock(cv.id);
+                          const result = await trySubscriptionUnlock(profile.id);
                           if (result === true) return;
                           if (result === null) return;
                         }
-                        await unlock(cv.id);
+                        await unlock(profile.id);
                       }}
-                      disabled={unlocking === cv.id}
+                      disabled={unlocking === profile.id}
                       className="btn btn-primary text-xs"
                     >
-                      {unlocking === cv.id ? "Unlocking..." : "Unlock contact"}
+                      {unlocking === profile.id ? "Unlocking..." : "Unlock contact"}
                     </button>
                   ) : (
                     <span className="text-xs font-semibold text-green-700">Contact available</span>
@@ -370,9 +401,9 @@ export default function EmployerSearch() {
                   ) : null}
                 </div>
               </div>
-              <p className="text-sm text-slate-700 line-clamp-3">{cv.summary}</p>
+              <p className="text-sm text-slate-700 line-clamp-3">{profile.summary}</p>
               <div className="flex flex-wrap gap-2">
-                {cv.skills?.slice(0, 8).map((skill) => (
+                {profile.skills?.slice(0, 8).map((skill) => (
                   <span key={skill} className="badge">
                     {skill}
                   </span>
@@ -384,16 +415,16 @@ export default function EmployerSearch() {
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">Availability:</span>{" "}
-                  {cv.availability || "Unknown"}
+                  {profile.availability || "Unknown"}
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">Location:</span>{" "}
-                  {cv.location || "Malta"}
+                  {profile.location || "Not specified"}
                 </p>
               </div>
               <p className="text-xs text-slate-600">
                 <span className="font-semibold text-slate-800">Work permit:</span>{" "}
-                {cv.work_permit_status || "Unknown"}
+                {profile.work_permit_status || "Unknown"}
               </p>
               {!isUnlocked ? (
                 <p className="text-xs text-slate-500">
