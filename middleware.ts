@@ -14,6 +14,12 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const path = req.nextUrl.pathname;
 
+  // Add CSP headers to allow Next.js inline scripts and external resources
+  res.headers.set(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://r2cdn.perplexity.ai; style-src 'self' 'unsafe-inline' https://r2cdn.perplexity.ai; img-src 'self' data: https:; font-src 'self' data: https://r2cdn.perplexity.ai; connect-src 'self' https://*.supabase.co https://vercel.live https://r2cdn.perplexity.ai;"
+  );
+
   // Skip static and public assets
   if (path.startsWith("/_next") || path.startsWith("/api/webhooks") || path.includes(".")) {
     return res;
